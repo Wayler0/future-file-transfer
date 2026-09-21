@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hybrid Key Demo Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F2F4F6; --panel:#FFFFFF; --ink:#16212B; --muted:#5B6875; --line:#C5CDD5;
+  --in:#B45309; --in-bg:#FDF3E4; --out:#0E7490; --out-bg:#E3F3F6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F161C; --panel:#18222B; --ink:#E6ECF1; --muted:#93A1AE; --line:#33424F;
+    --in:#F0A64A; --in-bg:#2A2113; --out:#4FC3D9; --out-bg:#10262C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F161C; --panel:#18222B; --ink:#E6ECF1; --muted:#93A1AE; --line:#33424F;
+  --in:#F0A64A; --in-bg:#2A2113; --out:#4FC3D9; --out-bg:#10262C;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif;padding-inline:16px;padding-block:32px}
+main{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1{font-size:28px;line-height:1.2;margin:0 0 8px;font-weight:600;text-wrap:balance}
+h2{font-size:18px;margin:0 0 4px;font-weight:600}
+p{margin:0;max-width:65ch}
+.lede{color:var(--muted)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.9em}
+figure{margin:0;display:flex;flex-direction:column;gap:10px}
+.scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}
+svg{display:block;width:100%;min-width:760px;height:auto;color:var(--ink)}
+figcaption{color:var(--muted);font-size:13px;max-width:75ch}
+.key{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.key span::before{content:"";display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;border:2px solid}
+.key .k-in::before{border-color:var(--in);background:var(--in-bg)}
+.key .k-out::before{border-color:var(--out);background:var(--out-bg)}
+ol{margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:6px;max-width:70ch}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.tw{overflow-x:auto}
+/* svg parts */
+.box{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+.in{fill:var(--in-bg);stroke:var(--in);stroke-width:2}
+.out{fill:var(--out-bg);stroke:var(--out);stroke-width:2}
+.zone-in{fill:none;stroke:var(--in);stroke-width:1.5;stroke-dasharray:6 4}
+.zone-out{fill:none;stroke:var(--out);stroke-width:1.5;stroke-dasharray:6 4}
+.t{fill:var(--ink);font:500 13px "IBM Plex Sans",sans-serif}
+.h{font:600 14px "IBM Plex Sans",sans-serif}
+.h-in{fill:var(--in)} .h-out{fill:var(--out)}
+.m{fill:var(--ink);font:400 12px "IBM Plex Mono",monospace}
+.s{fill:var(--muted);font:400 12px "IBM Plex Sans",sans-serif}
+.req{stroke:var(--ink);stroke-width:1.6;fill:none}
+.res{stroke:var(--muted);stroke-width:1.6;fill:none;stroke-dasharray:5 4}
+.ah{fill:var(--ink)} .ah2{fill:var(--muted)}
+</style>
+
+</head>
+<body>
+<main>
+  <header>
+    <h1>Hybrid Key Demo Map</h1>
+    <p class="lede">How the Flask web component for "Enhancing Secure File Transfer Resilience Against Advanced Decryption Threats Using Hybrid Key Encapsulation" is put together, and what happens when a request arrives.</p>
+  </header>
+
+  <section>
+    <figure>
+      <h2>1. Components and requests</h2>
+      <div class="key"><span class="k-in">In-Code Component (app.py)</span><span class="k-out">Outside Component (crypto_service.py)</span></div>
+      <div class="scroll">
+      <svg viewBox="0 0 960 400" role="img" aria-label="The browser sends requests to three route handlers in app.py. Two of the handlers call functions in the separate crypto_service.py module and return their results as JSON.">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><polygon class="ah" points="0,0 10,5 0,10"/></marker>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><polygon class="ah2" points="0,0 10,5 0,10"/></marker>
+        </defs>
+
+        <!-- Browser -->
+        <rect class="box" x="20" y="50" width="170" height="300" rx="6"/>
+        <text class="t h" x="105" y="80" text-anchor="middle">Browser</text>
+        <text class="s" x="105" y="100" text-anchor="middle">index.html + fetch()</text>
+        <text class="s" x="105" y="330" text-anchor="middle">shows the JSON</text>
+
+        <!-- app.py zone -->
+        <rect class="zone-in" x="330" y="30" width="310" height="340" rx="8"/>
+        <text class="t h h-in" x="350" y="54">app.py</text>
+        <text class="s" x="404" y="54">Flask route handlers</text>
+
+        <rect class="in" x="350" y="72" width="270" height="56" rx="4"/>
+        <text class="m" x="365" y="97">@app.route("/")</text>
+        <text class="s" x="365" y="115">home() renders the page</text>
+
+        <rect class="in" x="350" y="172" width="270" height="56" rx="4"/>
+        <text class="m" x="365" y="197">@app.route("/hash")</text>
+        <text class="s" x="365" y="215">hash_route() reads ?text=</text>
+
+        <rect class="in" x="350" y="272" width="270" height="56" rx="4"/>
+        <text class="m" x="365" y="297">@app.route("/generate-key")</text>
+        <text class="s" x="365" y="315">key_route()</text>
+
+        <!-- crypto_service zone -->
+        <rect class="zone-out" x="780" y="140" width="160" height="230" rx="8"/>
+        <text class="t h h-out" x="800" y="164">crypto_service.py</text>
+        <text class="s" x="800" y="182">standalone, no Flask</text>
+
+        <rect class="out" x="795" y="192" width="130" height="56" rx="4"/>
+        <text class="m" x="805" y="216">sha256_hash</text>
+        <text class="s" x="805" y="234">(text)</text>
+
+        <rect class="out" x="795" y="292" width="130" height="56" rx="4"/>
+        <text class="m" x="801" y="312" style="font-size:10.5px">generate_hybrid</text>
+        <text class="m" x="801" y="326" style="font-size:10.5px">_session_key()</text>
+
+        <!-- browser <-> routes -->
+        <text class="s" x="260" y="92" text-anchor="middle">GET /</text>
+        <line class="req" x1="190" y1="100" x2="348" y2="100" marker-end="url(#a1)"/>
+
+        <text class="s" x="260" y="186" text-anchor="middle">GET /hash?text=hello</text>
+        <line class="req" x1="190" y1="196" x2="348" y2="196" marker-end="url(#a1)"/>
+        <line class="res" x1="348" y1="214" x2="190" y2="214" marker-end="url(#a2)"/>
+        <text class="s" x="260" y="230" text-anchor="middle">JSON</text>
+
+        <text class="s" x="260" y="286" text-anchor="middle">GET /generate-key</text>
+        <line class="req" x1="190" y1="296" x2="348" y2="296" marker-end="url(#a1)"/>
+        <line class="res" x1="348" y1="314" x2="190" y2="314" marker-end="url(#a2)"/>
+        <text class="s" x="260" y="330" text-anchor="middle">JSON</text>
+
+        <!-- routes <-> crypto -->
+        <text class="s" x="710" y="186" text-anchor="middle">import + call</text>
+        <line class="req" x1="620" y1="196" x2="793" y2="196" marker-end="url(#a1)"/>
+        <line class="res" x1="793" y1="214" x2="620" y2="214" marker-end="url(#a2)"/>
+        <text class="s" x="710" y="230" text-anchor="middle">hex digest</text>
+
+        <text class="s" x="710" y="286" text-anchor="middle">import + call</text>
+        <line class="req" x1="620" y1="296" x2="793" y2="296" marker-end="url(#a1)"/>
+        <line class="res" x1="793" y1="314" x2="620" y2="314" marker-end="url(#a2)"/>
+        <text class="s" x="710" y="330" text-anchor="middle">key dict</text>
+
+        <!-- legend inside -->
+        <line class="req" x1="660" y1="380" x2="700" y2="380" marker-end="url(#a1)"/>
+        <text class="s" x="708" y="384">request / call</text>
+        <line class="res" x1="800" y1="380" x2="840" y2="380" marker-end="url(#a2)"/>
+        <text class="s" x="848" y="384">return value</text>
+      </svg>
+      </div>
+      <figcaption>The <code>/</code> route only serves the page and never touches the security code. The other two handlers live in <code>app.py</code> and call functions from <code>crypto_service.py</code>, which knows nothing about Flask.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <figure>
+      <h2>2. Inside <code>generate_hybrid_session_key()</code></h2>
+      <div class="scroll">
+      <svg viewBox="0 0 960 290" role="img" aria-label="Two independent random secrets, one standing in for a classical key exchange and one for a post-quantum exchange, are joined and hashed with SHA-256 to produce one session key.">
+        <defs>
+          <marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><polygon class="ah" points="0,0 10,5 0,10"/></marker>
+        </defs>
+
+        <rect class="out" x="20" y="30" width="250" height="80" rx="4"/>
+        <text class="m" x="36" y="58">classical_secret</text>
+        <text class="s" x="36" y="78">32 random bytes</text>
+        <text class="s" x="36" y="96">stands in for X25519 (ECDH)</text>
+
+        <rect class="out" x="20" y="170" width="250" height="80" rx="4"/>
+        <text class="m" x="36" y="198">post_quantum_secret</text>
+        <text class="s" x="36" y="218">32 random bytes</text>
+        <text class="s" x="36" y="236">stands in for Kyber (ML-KEM)</text>
+
+        <text class="s" x="145" y="140" text-anchor="middle">secrets.token_bytes(32) for each</text>
+
+        <line class="req" x1="270" y1="70" x2="358" y2="128" marker-end="url(#b1)"/>
+        <line class="req" x1="270" y1="210" x2="358" y2="152" marker-end="url(#b1)"/>
+
+        <rect class="box" x="360" y="105" width="150" height="70" rx="4"/>
+        <text class="t" x="435" y="136" text-anchor="middle">Concatenate</text>
+        <text class="m" x="435" y="156" text-anchor="middle">a + b</text>
+
+        <line class="req" x1="510" y1="140" x2="578" y2="140" marker-end="url(#b1)"/>
+
+        <rect class="box" x="580" y="105" width="150" height="70" rx="4"/>
+        <text class="t" x="655" y="136" text-anchor="middle">SHA-256</text>
+        <text class="s" x="655" y="156" text-anchor="middle">hashlib</text>
+
+        <line class="req" x1="730" y1="140" x2="788" y2="140" marker-end="url(#b1)"/>
+
+        <rect class="out" x="790" y="105" width="150" height="70" rx="4"/>
+        <text class="m" x="865" y="136" text-anchor="middle">session_key</text>
+        <text class="s" x="865" y="156" text-anchor="middle">64 hex characters</text>
+
+        <text class="s" x="655" y="220" text-anchor="middle">The key depends on both secrets,</text>
+        <text class="s" x="655" y="238" text-anchor="middle">so an attacker must break both.</text>
+      </svg>
+      </div>
+      <figcaption>This is a teaching simulation. A real hybrid scheme would obtain the two secrets from an X25519 exchange and a Kyber (ML-KEM) encapsulation instead of from random bytes.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>One request, step by step</h2>
+    <p class="lede">Following <code>GET /hash?text=hello</code>:</p>
+    <ol>
+      <li>The browser sends the request to the Flask server on port 5000.</li>
+      <li>Flask matches the URL to <code>hash_route()</code> in <code>app.py</code>.</li>
+      <li>The handler reads <code>text</code> and calls <code>sha256_hash("hello")</code> from <code>crypto_service.py</code>.</li>
+      <li>The function returns <code class="mono">2cf24dba…938b9824</code>.</li>
+      <li>The handler wraps it with <code>jsonify</code> and the browser prints the JSON.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Files</h2>
+    <div class="tw">
+    <table>
+      <thead><tr><th>File</th><th>Role</th><th>Contains</th></tr></thead>
+      <tbody>
+        <tr><td><code>app.py</code></td><td>In-Code Component</td><td>Flask app, <code>/</code>, <code>/hash</code> and <code>/generate-key</code> handlers</td></tr>
+        <tr><td><code>crypto_service.py</code></td><td>Outside Component</td><td><code>sha256_hash</code>, <code>generate_hybrid_session_key</code></td></tr>
+        <tr><td><code>templates/index.html</code></td><td>Test page</td><td>Two buttons that call the routes with <code>fetch()</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>
